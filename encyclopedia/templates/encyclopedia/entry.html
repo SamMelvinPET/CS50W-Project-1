@@ -1,0 +1,9 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock %}
+
+{% block body %}
+    {{ pagedata|safe }}
+{% endblock %}
