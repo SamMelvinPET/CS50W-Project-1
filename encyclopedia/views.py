@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
 from markdown2 import markdown
+from random import choice
 from . import util
 
 
@@ -15,7 +16,9 @@ def viewpage(request, name):
     pagedata = util.get_entry(name)
 
     if pagedata == None:
-        return render(request, "encyclopedia/entrynotfound.html")
+        return render(request, "encyclopedia/entrynotfound.html", {
+            "search": SearchBar()
+            })
     
     return render(request, "encyclopedia/entry.html", {
         "pagedata": markdown(pagedata),
@@ -45,3 +48,8 @@ def search(request):
                               "entries": partials,
                               "search": SearchBar()
                               })
+
+
+def randompage(request):
+    entry = choice(util.list_entries())
+    return HttpResponseRedirect(f"wiki/{entry}")
