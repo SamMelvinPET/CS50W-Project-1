@@ -1,0 +1,23 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+
+{% block body %}
+    <h1>Search Results</h1>
+    {% if entries %}
+        <p>There is not an entry that matches your search. however the following entries may be related to your search:</p>
+
+        <ul>
+            {% for entry in entries %}
+                <li><a href="wiki/{{ entry }}">{{ entry }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are is not an entry that matches your search, or any close matches to your search.</p>
+    {% endif %}
+    <br />
+    <p>Not found what you were looking for? Create an entry for this search here</p>
+
+{% endblock %}
