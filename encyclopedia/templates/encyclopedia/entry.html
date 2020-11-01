@@ -7,3 +7,7 @@
 {% block body %}
     {{ pagedata|safe }}
 {% endblock %}
+
+{% block nav %}
+    <a href="../edit/{{ pagetitle }}">Edit Page</a>
+{% endblock %}

@@ -53,3 +53,60 @@ def search(request):
 def randompage(request):
     entry = choice(util.list_entries())
     return HttpResponseRedirect(f"wiki/{entry}")
+
+
+class NewPageForm(forms.Form):
+    newtitle = forms.CharField(
+        label="New Entry Title:"
+        )
+    pagecontent = forms.CharField(
+        label="",
+        widget=forms.Textarea(attrs={'placeholder':'Page content goes here'})
+        )
+    editpage = forms.BooleanField(
+        label="",
+        widget=forms.HiddenInput(),
+        initial=False,
+        required=False
+        )
+
+
+
+def newpage(request):
+    if request.method == "POST":
+        form = NewPageForm(request.POST)
+        print(form.errors)
+        if form.is_valid():
+            newtitle = form.cleaned_data["newtitle"]
+            pagecontent = form.cleaned_data["pagecontent"]
+            editpage = form.cleaned_data["editpage"]
+            entries = util.list_entries()
+            if not(editpage):
+                if util.get_entry(newtitle) != None:
+                    return render(request, "encyclopedia/newpage.html", {
+                        "title":"New Entry",
+                        "search": SearchBar(),
+                        "form": NewPageForm(initial={'newtitle':newtitle, 'pagecontent':pagecontent}),
+                        "alert": True
+                        })
+            
+            util.save_entry(newtitle, pagecontent)
+            return HttpResponseRedirect(f"wiki/{newtitle}")
+        else:
+            return HttpResponse('Form not valid')
+
+    else:
+        return render(request, "encyclopedia/newpage.html", {
+            "title":"New Entry",
+            "search": SearchBar(),
+            "form": NewPageForm(),
+            "alert": False
+            })
+
+def editpage(request, name):
+    return render(request, "encyclopedia/newpage.html", {
+        "title":"Edit Entry",
+        "search": SearchBar(),
+        "form": NewPageForm(initial={'newtitle':name, 'pagecontent':util.get_entry(name), 'editpage':True}),
+        "alert": False
+        })
